@@ -15,8 +15,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Admin user
+        $this->call(AdminUserSeeder::class);
 
+        // Genres, movies, theaters, and seats
+        $this->call(GenreSeeder::class);
+        $this->call(MovieSeeder::class);
+        $this->call(TheaterSeeder::class);
+        $this->call(SeatSeeder::class);
+
+        // Screenings
+        $this->call(ScreeningSeeder::class);
+
+        // Create a test user
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
