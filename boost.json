@@ -4,14 +4,18 @@
         "codex",
         "copilot",
         "cursor",
-        "gemini"
+        "gemini",
+        "windsurf"
     ],
     "editors": [
         "claude_code",
         "codex",
         "cursor",
         "gemini",
-        "vscode"
+        "vscode",
+        "windsurf"
     ],
-    "guidelines": []
+    "guidelines": [
+        "laravel/fortify"
+    ]
 }

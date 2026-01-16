@@ -10,7 +10,10 @@
         },
         "flowbite": {
             "command": "npx",
-            "args": ["-y", "flowbite-mcp"]
+            "args": [
+                "-y",
+                "flowbite-mcp"
+            ]
         }
     }
 }
