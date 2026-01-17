@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('screening_id')->constrained()->cascadeOnDelete();
             $table->integer('total_price');
             $table->enum('status', ['pending', 'confirmed', 'cancelled'])->default('pending');
+            $table->string('payment_reference')->nullable();
+            $table->timestamp('confirmed_at')->nullable();
             $table->timestamps();
             $table->index('user_id');
             $table->index('screening_id');
