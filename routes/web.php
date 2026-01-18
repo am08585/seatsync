@@ -2,12 +2,19 @@
 
 use App\Http\Controllers\PaymentMockController;
 use App\Http\Controllers\SeatHoldController;
+use App\Livewire\MoviesBrowse;
+use App\Livewire\MovieScreenings;
 use App\Livewire\PaymentMockPage;
+use App\Livewire\ReservationCancelledPage;
+use App\Livewire\ReservationList;
 use App\Livewire\ReservationSummaryPage;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
+Route::middleware('auth')->group(function () {
+    Route::livewire('/', MoviesBrowse::class)->name('movies.index');
+    Route::livewire('/movies/{movie}', MovieScreenings::class)
+        ->whereNumber('movie')
+        ->name('screenings.show');
 });
 
 Route::middleware('auth')->group(function () {
@@ -26,7 +33,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/payment/mock/{hold_token}/fail', [PaymentMockController::class, 'fail'])
         ->name('payment.mock.fail');
 
+    Route::livewire('/reservations', ReservationList::class)
+        ->name('reservations.index');
+
     Route::livewire('/reservations/{reservation}', ReservationSummaryPage::class)
         ->whereNumber('reservation')
         ->name('reservations.summary');
+
+    Route::livewire('/reservations/cancelled', ReservationCancelledPage::class)
+        ->name('reservation.cancelled');
 });

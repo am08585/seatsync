@@ -32,6 +32,7 @@ class Reservation extends Model
         'status',
         'payment_reference',
         'confirmed_at',
+        'cancelled_at',
     ];
 
     /**
@@ -45,6 +46,7 @@ class Reservation extends Model
             'total_price' => 'integer',
             'status' => 'string',
             'confirmed_at' => 'datetime',
+            'cancelled_at' => 'datetime',
         ];
     }
 
@@ -70,5 +72,13 @@ class Reservation extends Model
     public function seats()
     {
         return $this->belongsToMany(Seat::class, 'reservation_seat')->withPivot('price');
+    }
+
+    /**
+     * Get the reservation logs for the reservation.
+     */
+    public function logs()
+    {
+        return $this->hasMany(ReservationLog::class);
     }
 }

@@ -41,7 +41,8 @@
     h2,
     h3,
     h4 {
-        @apply font-heading uppercase tracking-widest text-seatsync-gold;
+        /* @apply font-heading uppercase tracking-widest text-seatsync-gold; */
+        @apply font-heading leading-tight;
     }
 }
 
