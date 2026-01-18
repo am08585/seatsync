@@ -15,9 +15,20 @@ class SeatHoldService
     /**
      * @return array{hold_token: string, expires_at: CarbonImmutable}|false
      */
-    public function holdSeat(int $screeningId, int $seatId, int $userId): array|false
+    public function holdSeat(int $screeningId, int $seatId, int $userId, ?string $holdToken = null): array|false
     {
-        $holdToken = Str::random(40);
+        if ($holdToken === null) {
+            $existingHoldToken = SeatHold::query()
+                ->where('user_id', $userId)
+                ->where('screening_id', $screeningId)
+                ->where('expires_at', '>=', CarbonImmutable::now())
+                ->value('hold_token');
+
+            $holdToken = is_string($existingHoldToken) && $existingHoldToken !== ''
+                ? $existingHoldToken
+                : Str::random(40);
+        }
+
         $expiresAt = CarbonImmutable::now()->addSeconds(self::HOLD_TTL_SECONDS);
 
         $key = $this->holdKey($screeningId, $seatId);

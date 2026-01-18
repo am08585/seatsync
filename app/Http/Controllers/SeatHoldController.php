@@ -11,6 +11,7 @@ use App\Models\Seat;
 use App\Services\SeatHoldService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Str;
 
 class SeatHoldController extends Controller
 {
@@ -20,10 +21,13 @@ class SeatHoldController extends Controller
     {
         $user = $request->user();
 
+        $holdToken = (string) ($request->session()->get($this->holdTokenSessionKey($screening)) ?? Str::random(40));
+
         $result = $this->seatHoldService->holdSeat(
             screeningId: $screening->getKey(),
             seatId: $seat->getKey(),
             userId: $user->getKey(),
+            holdToken: $holdToken,
         );
 
         if ($result === false) {
@@ -37,9 +41,12 @@ class SeatHoldController extends Controller
             expiresAt: $result['expires_at']->toIso8601String(),
         ));
 
+        $request->session()->put($this->holdTokenSessionKey($screening), $result['hold_token']);
+
         return response()->json([
             'hold_token' => $result['hold_token'],
             'expires_at' => $result['expires_at']->toIso8601String(),
+            'payment_url' => route('payment.mock.show', ['hold_token' => $result['hold_token']]),
         ], 201);
     }
 
@@ -61,6 +68,10 @@ class SeatHoldController extends Controller
             return response()->json(['message' => 'Seat is not currently held.'], 404);
         }
 
+        if (! \App\Models\SeatHold::query()->where('user_id', $user->getKey())->where('screening_id', $screening->getKey())->exists()) {
+            $request->session()->forget($this->holdTokenSessionKey($screening));
+        }
+
         event(new SeatReleased(
             screeningId: $screening->getKey(),
             seatId: $seat->getKey(),
@@ -68,5 +79,10 @@ class SeatHoldController extends Controller
         ));
 
         return response()->json(['released' => true]);
+    }
+
+    private function holdTokenSessionKey(Screening $screening): string
+    {
+        return 'hold_token:screening:'.$screening->getKey();
     }
 }

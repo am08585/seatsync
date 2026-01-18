@@ -42,6 +42,7 @@ test('authenticated user can hold a seat', function () {
         ->assertJsonStructure([
             'hold_token',
             'expires_at',
+            'payment_url',
         ]);
 
     $holdToken = $response->json('hold_token');

@@ -27,8 +27,11 @@ class Reservation extends Model
     protected $fillable = [
         'user_id',
         'screening_id',
+        'hold_token',
         'total_price',
         'status',
+        'payment_reference',
+        'confirmed_at',
     ];
 
     /**
@@ -41,6 +44,7 @@ class Reservation extends Model
         return [
             'total_price' => 'integer',
             'status' => 'string',
+            'confirmed_at' => 'datetime',
         ];
     }
 
