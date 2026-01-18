@@ -8,8 +8,67 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+/* Seat Sync Custom Styles */
+/* Typography */
+@import url("https://fonts.googleapis.com/css2?family=Metamorphous&family=Quattrocento+Sans:wght@400;700&display=swap");
+
 @theme {
-    --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
-        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-        "Noto Color Emoji";
+    /* --- Brand Colors --- */
+    --color-seatsync-bg: #050505;
+    --color-seatsync-surface: #121212;
+    --color-seatsync-border: #2a2a2a;
+    --color-seatsync-gold: #e2b616;
+    --color-seatsync-silver: #a0a0a0;
+    --color-seatsync-blue: #2d7ff9;
+    --color-seatsync-red: #e50914;
+    --color-seatsync-occupied: #1f1f1f;
+
+    /* --- Typography --- */
+    --font-heading: "Metamorphous", serif;
+    --font-body: "Quattrocento Sans", sans-serif;
+
+    /* --- Custom Effects --- */
+    --shadow-glow: 0 0 20px rgba(226, 182, 22, 0.3);
+    --animate-pulse-fast: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* --- Base Styles --- */
+@layer base {
+    body {
+        @apply bg-seatsync-bg text-white font-body antialiased;
+    }
+    h1,
+    h2,
+    h3,
+    h4 {
+        @apply font-heading uppercase tracking-widest text-seatsync-gold;
+    }
+}
+
+/* Configuring Flowbite theme to match SeatSync design system */
+
+@theme {
+    --color-fg-brand-subtle: #e2b61640;
+    --color-fg-brand: var(--color-seatsync-gold);
+    --color-fg-brand-strong: var(--color-seatsync-gold);
+
+    --color-brand-softer: var(--color-seatsync-bg);
+    --color-brand-soft: var(--color-seatsync-surface);
+    --color-brand: var(--color-seatsync-gold);
+    --color-brand-medium: var(--color-seatsync-border);
+    --color-brand-strong: var(--color-seatsync-gold);
+
+    --font-sans:
+        "Quattrocento Sans", "ui-sans-serif", "system-ui", "-apple-system",
+        "system-ui", "Segoe UI", "Roboto", "Helvetica Neue", "Arial",
+        "Noto Sans", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji",
+        "Segoe UI Symbol", "Noto Color Emoji";
+    --font-body:
+        "Quattrocento Sans", "ui-sans-serif", "system-ui", "-apple-system",
+        "system-ui", "Segoe UI", "Roboto", "Helvetica Neue", "Arial",
+        "Noto Sans", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji",
+        "Segoe UI Symbol", "Noto Color Emoji";
+    --font-mono:
+        "ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas",
+        "Liberation Mono", "Courier New", "monospace";
 }
