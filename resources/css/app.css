@@ -1,3 +1,5 @@
+/* Typography */
+@import url("https://fonts.googleapis.com/css2?family=Metamorphous&family=Quattrocento+Sans:wght@400;700&display=swap");
 @import "tailwindcss";
 @import "flowbite/src/themes/default";
 @plugin "flowbite/plugin";
@@ -9,8 +11,6 @@
 @source '../**/*.js';
 
 /* Seat Sync Custom Styles */
-/* Typography */
-@import url("https://fonts.googleapis.com/css2?family=Metamorphous&family=Quattrocento+Sans:wght@400;700&display=swap");
 
 @theme {
     /* --- Brand Colors --- */
@@ -41,8 +41,7 @@
     h2,
     h3,
     h4 {
-        /* @apply font-heading uppercase tracking-widest text-seatsync-gold; */
-        @apply font-heading leading-tight;
+        @apply font-heading text-seatsync-gold antialiased;
     }
 }
 
@@ -58,18 +57,45 @@
     --color-brand: var(--color-seatsync-gold);
     --color-brand-medium: var(--color-seatsync-border);
     --color-brand-strong: var(--color-seatsync-gold);
+}
 
-    --font-sans:
-        "Quattrocento Sans", "ui-sans-serif", "system-ui", "-apple-system",
-        "system-ui", "Segoe UI", "Roboto", "Helvetica Neue", "Arial",
-        "Noto Sans", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji",
-        "Segoe UI Symbol", "Noto Color Emoji";
-    --font-body:
-        "Quattrocento Sans", "ui-sans-serif", "system-ui", "-apple-system",
-        "system-ui", "Segoe UI", "Roboto", "Helvetica Neue", "Arial",
-        "Noto Sans", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji",
-        "Segoe UI Symbol", "Noto Color Emoji";
-    --font-mono:
-        "ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas",
-        "Liberation Mono", "Courier New", "monospace";
+/* Custom Scrollbar for Dark Mode */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #050505;
+}
+::-webkit-scrollbar-thumb {
+    background: #2a2a2a;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #e2b616;
+}
+
+/* Screen Perspective Effect */
+.cinema-screen {
+    transform: perspective(600px) rotateX(-5deg) scale(0.9);
+    box-shadow: 0 40px 80px -10px rgba(255, 255, 255, 0.15);
+}
+
+/* Hide sections by default, managed by JS */
+.view-section {
+    display: none;
+}
+.view-section.active {
+    display: block;
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

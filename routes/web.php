@@ -8,16 +8,20 @@ use App\Livewire\PaymentMockPage;
 use App\Livewire\ReservationCancelledPage;
 use App\Livewire\ReservationList;
 use App\Livewire\ReservationSummaryPage;
+use App\Livewire\SeatSelection;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['web', 'auth'])->group(function () {
     Route::livewire('/', MoviesBrowse::class)->name('movies.index');
     Route::livewire('/movies/{movie}', MovieScreenings::class)
         ->whereNumber('movie')
         ->name('screenings.show');
+    Route::livewire('/screenings/{screening}/seats', SeatSelection::class)
+        ->whereNumber('screening')
+        ->name('seat-selection.show');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['web', 'auth'])->group(function () {
     Route::post('/screenings/{screening}/seats/{seat}/hold', [SeatHoldController::class, 'holdSeat'])
         ->name('seat-holds.hold');
 
@@ -43,3 +47,9 @@ Route::middleware('auth')->group(function () {
     Route::livewire('/reservations/cancelled', ReservationCancelledPage::class)
         ->name('reservation.cancelled');
 });
+
+Route::livewire('/practice', 'pages::practice')->name('practice');
+
+Route::get('/uiux', function () {
+    return view('uiux');
+})->name('uiux');

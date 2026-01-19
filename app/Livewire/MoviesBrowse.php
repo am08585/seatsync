@@ -41,7 +41,6 @@ class MoviesBrowse extends Component
 
     public function render(): View
     {
-        return view('livewire.movies-browse')
-            ->layout('layouts.app', ['title' => 'Browse Movies']);
+        return view('livewire.movies-browse');
     }
 }

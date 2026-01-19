@@ -33,6 +33,7 @@ class Screening extends Model
         'start_time',
         'end_time',
         'base_price',
+        'meta',
     ];
 
     /**
@@ -46,6 +47,7 @@ class Screening extends Model
             'start_time' => 'datetime',
             'end_time' => 'datetime',
             'base_price' => 'integer',
+            'meta' => 'array',
         ];
     }
 

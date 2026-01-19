@@ -16,25 +16,35 @@
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 
-<body class="bg-seatsync-bg text-white font-body antialiased min-h-screen flex flex-col">
+<body class="bg-seatsync-bg font-body flex min-h-screen flex-col text-white antialiased">
     <!-- NAVIGATION BAR -->
-    <nav class="sticky top-0 z-50 bg-seatsync-bg/90 backdrop-blur-md border-b border-seatsync-border">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
+    <nav class="bg-seatsync-bg/90 border-seatsync-border sticky top-0 z-50 border-b backdrop-blur-md">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex h-20 items-center justify-between">
                 <!-- Logo -->
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-seatsync-gold rounded-full flex items-center justify-center text-black font-heading text-xl">S</div>
-                    <span class="text-2xl font-heading tracking-wider text-white">SeatSync</span>
-                </div>
+                <a href="{{ route('movies.index') }}">
+                    <div class="flex items-center gap-3">
+
+                        <span
+                            class="bg-seatsync-gold font-heading flex h-10 w-10 items-center justify-center rounded-full text-xl text-black">
+                            S</span>
+                        <span class="font-heading text-2xl tracking-wider text-white">SeatSync</span>
+
+                    </div>
+                </a>
 
                 <!-- Desktop Menu -->
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-8">
-                        <a href="{{ route('movies.index') }}" class="hover:text-seatsync-gold transition-colors px-3 py-2 rounded-md text-sm font-bold uppercase tracking-wide {{ request()->routeIs('movies.*') ? 'text-seatsync-gold' : 'text-white' }}">Movies</a>
-                        <a href="{{ route('reservations.index') }}" class="hover:text-seatsync-gold transition-colors px-3 py-2 rounded-md text-sm font-bold uppercase tracking-wide {{ request()->routeIs('reservations.*') ? 'text-seatsync-gold' : 'text-white' }}">My Tickets</a>
+                        <a href="{{ route('movies.index') }}"
+                            class="hover:text-seatsync-gold {{ request()->routeIs('movies.*') ? 'text-seatsync-gold' : 'text-white' }} rounded-md px-3 py-2 text-sm font-bold uppercase tracking-wide transition-colors">Movies</a>
+                        <a href="{{ route('reservations.index') }}"
+                            class="hover:text-seatsync-gold {{ request()->routeIs('reservations.*') ? 'text-seatsync-gold' : 'text-white' }} rounded-md px-3 py-2 text-sm font-bold uppercase tracking-wide transition-colors">My
+                            Tickets</a>
                         @auth
-                            @if(auth()->user()->is_admin ?? false)
-                                <a href="{{ route('filament.admin.pages.dashboard') }}" class="text-seatsync-silver hover:text-white transition-colors px-3 py-2 rounded-md text-sm font-bold uppercase tracking-wide">Admin</a>
+                            @if (auth()->user()->is_admin ?? false)
+                                <a href="{{ route('filament.admin.pages.dashboard') }}"
+                                    class="text-seatsync-silver rounded-md px-3 py-2 text-sm font-bold uppercase tracking-wide transition-colors hover:text-white">Admin</a>
                             @endif
                         @endauth
                     </div>
@@ -42,22 +52,24 @@
 
                 <!-- User Profile -->
                 <div class="flex items-center gap-4">
-                    <button class="p-2 text-seatsync-silver hover:text-white">
-                        <i data-lucide="search" class="w-5 h-5"></i>
-                    </button>
+                    {{-- <button class="text-seatsync-silver p-2 hover:text-white">
+                        <i data-lucide="search" class="h-5 w-5"></i>
+                    </button> --}}
                     @auth
                         <div class="flex items-center gap-3">
-                            <span class="text-sm text-seatsync-silver hidden sm:block">{{ auth()->user()->name }}</span>
+                            <span class="text-seatsync-silver hidden text-sm sm:block">{{ auth()->user()->name }}</span>
                             <form method="POST" action="{{ route('logout') }}" class="inline">
                                 @csrf
-                                <button type="submit" class="w-8 h-8 rounded-full bg-seatsync-surface border border-seatsync-border flex items-center justify-center overflow-hidden hover:border-seatsync-gold transition-colors">
-                                    <i data-lucide="log-out" class="w-4 h-4 text-seatsync-silver"></i>
+                                <button type="submit"
+                                    class="bg-seatsync-surface border-seatsync-border hover:border-seatsync-gold flex h-8 w-8 cursor-pointer items-center justify-center overflow-hidden rounded-full border transition-colors">
+                                    <i data-lucide="log-out" class="text-seatsync-silver h-4 w-4"></i>
                                 </button>
                             </form>
                         </div>
                     @else
-                        <div class="w-8 h-8 rounded-full bg-seatsync-surface border border-seatsync-border flex items-center justify-center overflow-hidden">
-                            <i data-lucide="user" class="w-5 h-5 text-seatsync-silver"></i>
+                        <div
+                            class="bg-seatsync-surface border-seatsync-border flex h-8 w-8 items-center justify-center overflow-hidden rounded-full border">
+                            <i data-lucide="user" class="text-seatsync-silver h-5 w-5"></i>
                         </div>
                     @endauth
                 </div>

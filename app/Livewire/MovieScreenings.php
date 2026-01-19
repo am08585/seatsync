@@ -30,6 +30,6 @@ class MovieScreenings extends Component
 
         return view('livewire.movie-screenings', [
             'screenings' => $screenings,
-        ])->layout('layouts.app', ['title' => $this->movie->title.' - Showtimes']);
+        ]);
     }
 }

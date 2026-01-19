@@ -38,7 +38,8 @@ class SeatHoldService
             'expires_at' => $expiresAt->toIso8601String(),
         ], JSON_THROW_ON_ERROR);
 
-        $result = Redis::command('SET', [$key, $value, 'EX', self::HOLD_TTL_SECONDS, 'NX']);
+        // $result = Redis::command('SET', [$key, $value, 'EX', self::HOLD_TTL_SECONDS, 'NX']);
+        $result = Redis::set($key, $value, 'EX', self::HOLD_TTL_SECONDS, 'NX');
 
         if ($result !== 'OK' && $result !== true) {
             return false;

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @property int $id
@@ -46,5 +47,29 @@ class Movie extends Model
     public function screenings()
     {
         return $this->hasMany(Screening::class);
+    }
+
+    /**
+     * Get the full URL for the poster image.
+     */
+    public function getPosterUrlAttribute(): string
+    {
+        return $this->poster_path ? asset('storage/'.$this->poster_path) : '';
+    }
+
+    /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::forceDeleted(function ($movie) {
+            // Check if the movie has an associated file path
+            if ($movie->poster_path) {
+                // Delete the file using the Storage facade
+                Storage::disk('public')->delete($movie->poster_path);
+            }
+        });
     }
 }
