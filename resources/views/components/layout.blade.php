@@ -10,16 +10,22 @@
 
     <title>{{ $title }}</title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-
     <!-- Styles / Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-gray-50 dark:bg-gray-900">
-    <main class="flex min-h-screen flex-col items-center justify-center px-6 py-8">
+<body class="bg-seatsync-bg font-body text-white antialiased">
+    <!-- Cinema Background Pattern -->
+    <div class="opacity-3 pointer-events-none fixed inset-0">
+        <div class="from-seatsync-gold/5 to-seatsync-blue/5 absolute inset-0 bg-gradient-to-br via-transparent"></div>
+        <div class="grid h-full grid-cols-12 gap-2">
+            @for ($i = 0; $i < 144; $i++)
+                <div class="bg-seatsync-border/20 rounded-full"></div>
+            @endfor
+        </div>
+    </div>
+
+    <main class="relative flex min-h-screen flex-col items-center justify-center px-6 py-8">
         <div class="w-full max-w-md">
             {{ $slot }}
         </div>

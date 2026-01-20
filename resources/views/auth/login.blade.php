@@ -1,89 +1,140 @@
-<x-layout title="Login">
-    <div class="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
-        <div class="mb-6">
-            <h1 class="mb-2 text-2xl font-bold text-gray-900 dark:text-white">Sign in to your account</h1>
-            <p class="text-sm text-gray-600 dark:text-gray-400">Welcome back! Please enter your details.</p>
+<x-layout title="Login - SeatSync">
+    <div class="bg-seatsync-surface border-seatsync-border relative overflow-hidden rounded-2xl border shadow-2xl">
+        <!-- Cinema Screen Effect Background -->
+        <div class="from-seatsync-gold/10 to-seatsync-blue/10 absolute inset-0 bg-gradient-to-br via-transparent"></div>
+
+        <!-- Cinema Seats Pattern -->
+        <div class="absolute inset-0 opacity-5">
+            <div class="grid grid-cols-8 gap-1 p-8">
+                @for ($i = 0; $i < 64; $i++)
+                    <div class="bg-seatsync-gold aspect-square rounded-full"></div>
+                @endfor
+            </div>
         </div>
 
-        @if ($errors->any())
-            <div class="mb-4 rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-900/20">
-                <div class="flex">
-                    <svg class="mr-2 h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd" />
+        <div class="relative p-8">
+            <!-- Brand Header -->
+            <div class="mb-8 text-center">
+                <div
+                    class="bg-seatsync-gold/20 border-seatsync-gold mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full border-2">
+                    <svg class="text-seatsync-gold h-8 w-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M18 3v2h-2V3H8v2H6V3H4v18h2v-2h2v2h8v-2h2v2h2V3h-2zM8 17H6v-2h2v2zm0-4H6v-2h2v2zm0-4H6V7h2v2zm10 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z" />
                     </svg>
-                    <div class="flex-1">
-                        <h3 class="text-sm font-medium text-red-800 dark:text-red-200">There were some problems with
-                            your input</h3>
-                        <ul class="mt-2 list-inside list-disc text-sm text-red-700 dark:text-red-300">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
+                </div>
+                <h1 class="font-heading text-seatsync-gold mb-2 text-3xl font-bold">SeatSync</h1>
+                <p class="text-seatsync-silver">Welcome back to your cinema experience</p>
+            </div>
+
+            @if ($errors->any())
+                <div class="border-seatsync-red/50 bg-seatsync-red/10 mb-6 rounded-lg border p-4">
+                    <div class="flex items-start">
+                        <svg class="text-seatsync-red mr-3 mt-0.5 h-5 w-5 flex-shrink-0" fill="currentColor"
+                            viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <div class="flex-1">
+                            <h3 class="text-seatsync-red text-sm font-medium">Login Error</h3>
+                            <ul class="text-seatsync-silver mt-2 list-inside list-disc text-sm">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-        @endif
+            @endif
 
-        @if (session('status'))
-            <div
-                class="mb-4 rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-900/20">
-                <div class="flex">
-                    <svg class="mr-2 h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+            @if (session('status'))
+                <div class="mb-6 rounded-lg border border-green-500/50 bg-green-500/10 p-4">
+                    <div class="flex items-center">
+                        <svg class="mr-3 h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <p class="text-sm text-green-400">{{ session('status') }}</p>
+                    </div>
+                </div>
+            @endif
+
+            <form method="POST" action="{{ route('login') }}" class="space-y-6">
+                @csrf
+
+                <div class="space-y-4">
+                    <div>
+                        <label for="email" class="text-seatsync-silver mb-2 block text-sm font-medium">Email
+                            Address</label>
+                        <div class="relative">
+                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                <svg class="text-seatsync-silver/50 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                                </svg>
+                            </div>
+                            <input type="email" name="email" id="email" value="{{ old('email') }}" required
+                                autofocus
+                                class="bg-seatsync-bg border-seatsync-border placeholder-seatsync-silver/50 focus:ring-seatsync-gold block w-full rounded-lg border py-3 pl-10 pr-3 text-white transition-all duration-200 focus:border-transparent focus:outline-none focus:ring-2"
+                                placeholder="Enter your email">
+                        </div>
+                        @error('email')
+                            <p class="text-seatsync-red mt-2 text-sm">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="password"
+                            class="text-seatsync-silver mb-2 block text-sm font-medium">Password</label>
+                        <div class="relative">
+                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                <svg class="text-seatsync-silver/50 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <input type="password" name="password" id="password" required
+                                class="bg-seatsync-bg border-seatsync-border placeholder-seatsync-silver/50 focus:ring-seatsync-gold block w-full rounded-lg border py-3 pl-10 pr-3 text-white transition-all duration-200 focus:border-transparent focus:outline-none focus:ring-2"
+                                placeholder="Enter your password">
+                        </div>
+                        @error('password')
+                            <p class="text-seatsync-red mt-2 text-sm">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input id="remember" name="remember" type="checkbox"
+                            class="border-seatsync-border bg-seatsync-bg text-seatsync-gold focus:ring-seatsync-gold h-4 w-4 rounded focus:ring-2">
+                        <label for="remember" class="text-seatsync-silver ml-2 text-sm">Remember me</label>
+                    </div>
+                    <a href="{{ route('password.request') }}"
+                        class="text-seatsync-gold hover:text-seatsync-gold/80 text-sm transition-colors duration-200">Forgot
+                        password?</a>
+                </div>
+
+                <button type="submit"
+                    class="bg-seatsync-gold text-seatsync-bg hover:bg-seatsync-gold/90 focus:ring-seatsync-gold focus:ring-offset-seatsync-surface flex w-full transform items-center justify-center rounded-lg px-6 py-3 font-semibold transition-all duration-200 hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2">
+                    <svg class="mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z"
                             clip-rule="evenodd" />
                     </svg>
-                    <p class="text-sm text-green-800 dark:text-green-200">{{ session('status') }}</p>
+                    Sign In
+                </button>
+
+                <div class="border-seatsync-border border-t pt-6 text-center">
+                    <p class="text-seatsync-silver text-sm">
+                        New to SeatSync?
+                        <a href="{{ route('register') }}"
+                            class="text-seatsync-gold hover:text-seatsync-gold/80 font-medium transition-colors duration-200">Create
+                            Account</a>
+                    </p>
                 </div>
-            </div>
-        @endif
-
-        <form method="POST" action="{{ route('login') }}" class="space-y-4">
-            @csrf
-
-            <div>
-                <label for="email" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Email
-                    address</label>
-                <input type="email" name="email" id="email" value="{{ old('email') }}" required autofocus
-                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                    placeholder="name@company.com">
-                @error('email')
-                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div>
-                <label for="password"
-                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                <input type="password" name="password" id="password" required
-                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                    placeholder="••••••••">
-                @error('password')
-                    <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <input id="remember" name="remember" type="checkbox"
-                        class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
-                    <label for="remember" class="ml-2 text-sm text-gray-900 dark:text-gray-300">Remember me</label>
-                </div>
-                <a href="{{ route('password.request') }}"
-                    class="text-sm text-blue-600 hover:underline dark:text-blue-500">Forgot password?</a>
-            </div>
-
-            <button type="submit"
-                class="w-full rounded-lg bg-blue-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                Sign in
-            </button>
-
-            <p class="text-center text-sm text-gray-600 dark:text-gray-400">
-                Don't have an account?
-                <a href="{{ route('register') }}" class="text-blue-600 hover:underline dark:text-blue-500">Sign up</a>
-            </p>
-        </form>
+            </form>
+        </div>
     </div>
 </x-layout>
