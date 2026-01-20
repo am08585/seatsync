@@ -30,7 +30,7 @@ class SeatSelection extends Component
 
     public function mount(Screening $screening): void
     {
-        $this->screening = $screening->load(['theater', 'movie', 'reservations']);
+        $this->screening = $screening->load(['theater', 'movie', 'reservations', 'reservations.seats']);
         $this->loadSeatMap();
     }
 
@@ -92,17 +92,16 @@ class SeatSelection extends Component
 
     public function getSeatStatus(Seat $seat): string
     {
-        // Check if seat is reserved
-        $isReserved = $this->screening->reservations
-            ->where('seat_id', $seat->id)
-            ->isNotEmpty();
+        // Check if seat is reserved from reservation seats relationship
+        $isReserved = $this->screening->reservations()->whereHas('seats', function ($query) use ($seat) {
+            $query->where('seat_id', $seat->id);
+        })->first();
 
-        // Check if seat is held
-        $isHeld = isset($this->seatHolds[$seat->id]);
+        // Check if seat is held by using seatHoldService
+        $isHeld = $this->seatHoldService->isSeatHeld($this->screening->id, $seat->id);
 
         // Check if seat is currently selected by this user
         $isSelected = in_array($seat->id, array_column($this->selectedSeats, 'seat_id'));
-
         if ($isReserved) {
             return 'reserved';
         } elseif ($isHeld && ! $isSelected) {
