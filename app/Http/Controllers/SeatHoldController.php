@@ -8,6 +8,7 @@ use App\Http\Requests\HoldSeatRequest;
 use App\Http\Requests\ReleaseSeatRequest;
 use App\Models\Screening;
 use App\Models\Seat;
+use App\Models\SeatHold;
 use App\Services\SeatHoldService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
@@ -68,7 +69,7 @@ class SeatHoldController extends Controller
             return response()->json(['message' => 'Seat is not currently held.'], 404);
         }
 
-        if (! \App\Models\SeatHold::query()->where('user_id', $user->getKey())->where('screening_id', $screening->getKey())->exists()) {
+        if (! SeatHold::query()->where('user_id', $user->getKey())->where('screening_id', $screening->getKey())->exists()) {
             $request->session()->forget($this->holdTokenSessionKey($screening));
         }
 

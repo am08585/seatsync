@@ -21,14 +21,13 @@ test('authenticated user can hold a seat', function () {
 
     $key = "hold:screening:{$screening->getKey()}:seat:{$seat->getKey()}";
 
-    Redis::shouldReceive('command')
+    Redis::shouldReceive('set')
         ->once()
-        ->withArgs(function (string $command, array $arguments) use ($key) {
-            return $command === 'SET'
-                && $arguments[0] === $key
-                && $arguments[2] === 'EX'
-                && $arguments[3] === SeatHoldService::HOLD_TTL_SECONDS
-                && $arguments[4] === 'NX';
+        ->withArgs(function ($paramKey, $value, $option, $ttl, $flag) use ($key) {
+            return $paramKey === $key
+                && $option === 'EX'
+                && $ttl === SeatHoldService::HOLD_TTL_SECONDS
+                && $flag === 'NX';
         })
         ->andReturn('OK');
 
@@ -66,14 +65,13 @@ test('holding an already held seat returns conflict', function () {
 
     $key = "hold:screening:{$screening->getKey()}:seat:{$seat->getKey()}";
 
-    Redis::shouldReceive('command')
+    Redis::shouldReceive('set')
         ->twice()
-        ->withArgs(function (string $command, array $arguments) use ($key) {
-            return $command === 'SET'
-                && $arguments[0] === $key
-                && $arguments[2] === 'EX'
-                && $arguments[3] === SeatHoldService::HOLD_TTL_SECONDS
-                && $arguments[4] === 'NX';
+        ->withArgs(function ($paramKey, $value, $option, $ttl, $flag) use ($key) {
+            return $paramKey === $key
+                && $option === 'EX'
+                && $ttl === SeatHoldService::HOLD_TTL_SECONDS
+                && $flag === 'NX';
         })
         ->andReturn('OK', null);
 

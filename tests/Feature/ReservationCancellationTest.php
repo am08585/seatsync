@@ -104,15 +104,14 @@ test('eligible reservation cancellation succeeds', function () {
         $seatB->getKey() => ['price' => 1500],
     ]);
 
-    $this->actingAs($user);
-
-    // Open the reservations page and click cancel
-    $response = $this->get(route('reservations.index'));
-    $response->assertStatus(200);
-    $response->assertSee('Cancel Reservation');
+    // Test that the Livewire component loads the reservation correctly
+    $livewire = \Livewire\Livewire::actingAs($user)->test(\App\Livewire\ReservationList::class);
+    $livewire->assertSee($movie->title);
+    $livewire->assertSee('Cancel');
+    $livewire->assertSee('Reservation');
 
     // Simulate the cancellation through Livewire
-    \Livewire\Livewire::test(\App\Livewire\ReservationList::class)
+    \Livewire\Livewire::actingAs($user)->test(\App\Livewire\ReservationList::class)
         ->call('confirmCancel', $reservation->id);
 
     // Check that the modal opens

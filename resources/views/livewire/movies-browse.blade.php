@@ -1,8 +1,7 @@
 <div>
     <!-- Hero Section -->
     @if ($movies->isNotEmpty())
-        {{-- @php $featuredMovie = $movies->first(); @endphp --}}
-        @php $featuredMovie = $movies->firstWhere('title', 'Dune: Part Two'); @endphp
+        @php $featuredMovie = $movies->firstWhere('title', 'Dune: Part Two') ?? $movies->first(); @endphp
         <div class="relative h-[60vh] min-w-full overflow-hidden">
             <img class="absolute inset-0 bg-cover bg-center opacity-40"
                 src="{{ asset('storage/movies/posters/dune-2-movie-poster.jpg') }}">
