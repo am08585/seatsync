@@ -6,6 +6,10 @@ SeatSync is a modern cinema seat reservation system built with Laravel 12 and Li
 <img width="1919" height="942" alt="SeatSync - Screenshots (1)" src="https://github.com/user-attachments/assets/6f647fd3-b36b-4fb9-bed4-de0f796cfcd5" />
 
 
+### Project Motivation
+
+Built to demonstrate advanced backend architecture, real-world booking workflows, and scalable Laravel design patterns.
+Implementation inspired from Roadmap.sh https://roadmap.sh/projects/movie-reservation-system
 
 
 ### Key Features
