@@ -17,7 +17,7 @@ class ScreeningSeeder extends Seeder
         $movies = Movie::all();
         $theaters = Theater::all();
 
-        $baseDate = now()->addDays(2);
+        $baseDate = now()->addMonths(12);
         $times = ['14:00', '17:00', '20:00'];
         $basePrices = [1200, 1500, 1800]; // in cents
 
