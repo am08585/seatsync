@@ -21,6 +21,13 @@ class SeatSelection extends Component
 
     public string $holdToken = '';
 
+    // Performance optimization: Pre-fetched data
+    public array $reservedSeats = [];
+
+    public array $heldSeats = [];
+
+    public array $seatModels = [];
+
     protected SeatHoldService $seatHoldService;
 
     protected $listeners = [
@@ -31,12 +38,44 @@ class SeatSelection extends Component
     public function mount(Screening $screening): void
     {
         $this->screening = $screening->load(['theater', 'movie', 'reservations', 'reservations.seats']);
+        $this->preloadSeatData();
         $this->loadSeatMap();
     }
 
     public function boot(SeatHoldService $seatHoldService): void
     {
         $this->seatHoldService = $seatHoldService;
+    }
+
+    /**
+     * Pre-fetch all seat data to eliminate N+1 queries
+     */
+    public function preloadSeatData(): void
+    {
+        // Fetch all seats for this theater once
+        $this->seatModels = Seat::where('theater_id', $this->screening->theater_id)
+            ->get()
+            ->keyBy('id')
+            ->toArray();
+
+        // Fetch all reserved seats for this screening in one query
+        $this->reservedSeats = $this->screening->reservations()
+            ->with('seats')
+            ->get()
+            ->flatMap(function ($reservation) {
+                return $reservation->seats->pluck('id');
+            })
+            ->unique()
+            ->flip()
+            ->toArray();
+
+        // Fetch all active seat holds for this screening in one query
+        $this->heldSeats = $this->screening->seatHolds()
+            ->where('expires_at', '>', now())
+            ->pluck('seat_id')
+            ->unique()
+            ->flip()
+            ->toArray();
     }
 
     public function loadSeatMap(): void
@@ -79,6 +118,9 @@ class SeatSelection extends Component
                 })->toArray();
             }
         }
+
+        // Refresh preloaded data to ensure consistency
+        $this->preloadSeatData();
     }
 
     public function getTheaterSeats(): Collection
@@ -92,16 +134,15 @@ class SeatSelection extends Component
 
     public function getSeatStatus(Seat $seat): string
     {
-        // Check if seat is reserved from reservation seats relationship
-        $isReserved = $this->screening->reservations()->whereHas('seats', function ($query) use ($seat) {
-            $query->where('seat_id', $seat->id);
-        })->first();
+        // Check if seat is reserved using pre-fetched data
+        $isReserved = isset($this->reservedSeats[$seat->id]);
 
-        // Check if seat is held by using seatHoldService
-        $isHeld = $this->seatHoldService->isSeatHeld($this->screening->id, $seat->id);
+        // Check if seat is held using pre-fetched data
+        $isHeld = isset($this->heldSeats[$seat->id]);
 
         // Check if seat is currently selected by this user
         $isSelected = in_array($seat->id, array_column($this->selectedSeats, 'seat_id'));
+
         if ($isReserved) {
             return 'reserved';
         } elseif ($isHeld && ! $isSelected) {
@@ -122,9 +163,25 @@ class SeatSelection extends Component
         return $basePrice + $seat->price_modifier / 100;
     }
 
+    /**
+     * Get seat model from pre-fetched data to avoid database queries
+     */
+    private function getSeatModel(int $seatId): ?Seat
+    {
+        if (isset($this->seatModels[$seatId])) {
+            return new Seat($this->seatModels[$seatId]);
+        }
+
+        return null;
+    }
+
     public function toggleSeatSelection(int $seatId): void
     {
-        $seat = Seat::find($seatId);
+        $seat = $this->getSeatModel($seatId);
+        if (! $seat) {
+            return;
+        }
+
         $user = auth()->user();
         if (! $user) {
             return;
@@ -182,6 +239,14 @@ class SeatSelection extends Component
             ->get()
             ->keyBy('seat_id')
             ->toArray();
+
+        // Also refresh the heldSeats lookup array for consistency
+        $this->heldSeats = $this->screening->seatHolds()
+            ->where('expires_at', '>', now())
+            ->pluck('seat_id')
+            ->unique()
+            ->flip()
+            ->toArray();
     }
 
     private function releaseSeat(int $seatId): void
@@ -213,9 +278,9 @@ class SeatSelection extends Component
     {
         $total = 0;
         foreach ($this->selectedSeats as $selectedSeat) {
-            $seatModel = Seat::find($selectedSeat['seat_id']);
-            if ($seatModel) {
-                $total += $this->getSeatPrice($seatModel);
+            $seat = $this->getSeatModel($selectedSeat['seat_id']);
+            if ($seat) {
+                $total += $this->getSeatPrice($seat);
             }
         }
 
@@ -248,6 +313,10 @@ class SeatSelection extends Component
 
     public function render(): View
     {
+        // Ensure data is preloaded on every render
+        if (empty($this->seatModels)) {
+            $this->preloadSeatData();
+        }
 
         return view('livewire.seat-selection', [
             'screening' => $this->screening,
