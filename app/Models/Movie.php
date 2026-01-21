@@ -60,16 +60,17 @@ class Movie extends Model
     /**
      * Boot the model.
      */
-    protected static function boot()
-    {
-        parent::boot();
+    // protected static function boot()
+    // {
+    //     parent::boot();
 
-        static::forceDeleted(function ($movie) {
-            // Check if the movie has an associated file path
-            if ($movie->poster_path) {
-                // Delete the file using the Storage facade
-                Storage::disk('public')->delete($movie->poster_path);
-            }
-        });
-    }
+    //     // Delete the files when movie is deleted permanently
+    //     static::forceDeleted(function ($movie) {
+    //         // Check if the movie has an associated file path
+    //         if ($movie->poster_path) {
+    //             // Delete the file using the Storage facade
+    //             Storage::disk('public')->delete($movie->poster_path);
+    //         }
+    //     });
+    // }
 }
